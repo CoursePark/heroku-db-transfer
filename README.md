@@ -14,3 +14,12 @@ Optionals
 ---------
 
 - Heroku Scheduler for periodic overwritting of data on destination with data from source
+
+
+Usage
+-----
+
+- ensure HEROKU_API_TOKEN is set as an environment variable
+- `node heroku-db-transfer.js source_heroku_app_name dest_heroku_app_name`
+- or with Heroku Scheduler by calling `db-transfer source_heroku_app_name dest_heroku_app_name`
+- or with Heroku Scheduler if the database, scheduler and this code are all in the same app you can leave off the `dest_heroku_app_name`.
