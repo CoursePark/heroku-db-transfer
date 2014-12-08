@@ -1,8 +1,8 @@
 {
 	"name": "heroku-db-transfer",
 	"description": "Replicate / restore / transfer,  a Heroku backup database from one app to another heroku app.",
-	"version": "0.3.0",
-	"main": "heroku-replicate-db.js",
+	"version": "0.3.1",
+	"main": "heroku-db-transfer.js",
 	"engines": {
 		"node": "0.10.33"
 	},
