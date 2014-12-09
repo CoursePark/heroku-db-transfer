@@ -14,9 +14,9 @@ var sourceApp = process.argv[2];
 var destApp;
 if (process.argv.length > 3) {
 	destApp = process.argv[3];
-} else if (!process.env.APP_NAME) {
+} else if (process.env.APP_NAME) {
 	destApp = process.env.APP_NAME;
-} else if (!process.env.PGBACKUPS_URL || !process.env.DATABASE_URL) {
+} else if (process.env.PGBACKUPS_URL && process.env.DATABASE_URL) {
 	destApp = null;
 } else {
 	console.log('requires destination_app argument, or APP_NAME environment variable, or PGBACKUPS_URL and DATABASE_URL environment variables' + "\n" + 'node heroku-db-transfer.js source_app [destination_app]');
