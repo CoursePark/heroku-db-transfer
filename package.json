@@ -1,7 +1,7 @@
 {
 	"name": "heroku-db-transfer",
 	"description": "Replicate / restore / transfer,  a Heroku backup database from one app to another heroku app.",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"main": "heroku-db-transfer.js",
 	"engines": {
 		"node": "0.10.33"
@@ -11,8 +11,8 @@
 		"url": "git@github.com:CoursePark/heroku-db-transfer.git"
 	},
 	"dependencies": {
-		"heroku-client": "1.9.0",
-		"request": "2.49.0",
-		"when": "3.6.3"
+		"heroku-client": "^1.9.0",
+		"request": "^2.49.0",
+		"when": "^3.6.3"
 	}
 }
