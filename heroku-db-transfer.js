@@ -90,8 +90,8 @@ when.resolve()
 		return JSON.parse(requestCallbackParam[1]);
 	})
 	.then(function (transfer) {
-		// transfer successfull, show it for fun
-		console.log(transfer);
+		// transfer successfull, show the id
+		console.log(transfer.id);
 	})
 	.catch(function (err) {
 		// oh no
