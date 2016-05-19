@@ -6,13 +6,11 @@ var rp = require('request-promise');
 var when = require('when');
 
 module.exports = function (sourceApp, targetApp, verbose) {
-	if (typeof sourceApp !== 'string' || typeof targetApp !== 'string') {
-		throw new Error('heroku-db-copy must be passed two app names, a '
-			+ 'source and a target. Ex. heroku:db-copy:bln-api:qc-bln-api'
-		);
-	}
+	var authToken = process.env.HEROKU_API_TOKEN;
+	var interval = 2 * 1000;
+	var timeoutWithoutProgress = 30 * 1000;
 	
-	var heroku = new Heroku({token: process.env.HEROKU_API_TOKEN});
+	var heroku = new Heroku({token: authToken});
 	
 	return when
 		.all([
@@ -49,7 +47,7 @@ module.exports = function (sourceApp, targetApp, verbose) {
 				uri: 'https://postgres-api.heroku.com/client/v11/databases/' + target.name + '/transfers',
 				method: 'POST',
 				json: true,
-				auth: {user: '', pass: process.env.HEROKU_API_TOKEN},
+				auth: {user: '', pass: authToken},
 				body: {
 					from_name: source.name,
 					from_url: source.url,
@@ -59,19 +57,12 @@ module.exports = function (sourceApp, targetApp, verbose) {
 			});
 		})
 		.then(function (transferState) {
-			if (verbose) {
-				console.log('DB TRANSFER IN PROGRESS');
-			}
-			
-			var interval = 2 * 1000;
-			var timeoutWithoutProgress = 30 * 1000;
-			
 			var getTransferState = function () {
 				return rp({
-					uri: 'https://postgres-api.heroku.com/client/v11/apps/' + targetApp + '/transfers/' + transferState.uuid + '?verbose=false',
+					uri: 'https://postgres-api.heroku.com/client/v11/apps/' + targetApp + '/transfers/' + transferState.uuid,
 					method: 'GET',
 					json: true,
-					auth: {user: '', pass: process.env.HEROKU_API_TOKEN}
+					auth: {user: '', pass: authToken}
 				});
 			};
 			
@@ -101,9 +92,7 @@ module.exports = function (sourceApp, targetApp, verbose) {
 			return poll(getTransferState, interval, endCondition);
 		})
 		.then(function (transferState) {
-			if (verbose) {
-				console.log('DB TRANSFER COMPLETE', transferState.processed_bytes);
-			}
+			return transferState.processed_bytes;
 		})
 	;
 };

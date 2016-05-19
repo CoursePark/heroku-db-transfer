@@ -9,7 +9,6 @@ Returns a promise that is resolved once the transfer is complete.
 Has optional verbose parameter that will use console.log to output something like:
 
 ```
-DB TRANSFER IN PROGRESS
 0
 8912896
 14155776
@@ -18,7 +17,6 @@ DB TRANSFER IN PROGRESS
 35197513
 35197513
 35197513
-DB TRANSFER COMPLETE 35197513
 ```
 
 ## Context
@@ -40,8 +38,8 @@ Node to get the job done.
 var herokuDbTransfer = require('heroku-db-transfer');
 
 herokuDbTransfer(sourceAppName, targetAppName)
-  .then(function () {
-    console.log('DONE DB TRANSFER');
+  .then(function (bytesTransfered) {
+    console.log('DONE DB TRANSFER', bytesTransfered);
   })
 ;
 ```
