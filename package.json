@@ -1,18 +1,19 @@
 {
-	"name": "heroku-db-transfer",
-	"description": "Replicate / restore / transfer,  a Heroku backup database from one app to another heroku app.",
-	"version": "0.3.4",
-	"main": "heroku-db-transfer.js",
-	"engines": {
-		"node": "0.10.33"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:CoursePark/heroku-db-transfer.git"
-	},
-	"dependencies": {
-		"heroku-client": "^1.9.0",
-		"request": "^2.49.0",
-		"when": "^3.6.3"
-	}
+  "name": "heroku-db-transfer",
+  "description": "Copy a database from a source Heroku app to a target Heroku app.",
+  "version": "1.0.0",
+  "main": "heroku-db-transfer.js",
+  "engines": {
+    "node": "0.12.7",
+    "npm": "2.14.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:CoursePark/heroku-db-transfer.git"
+  },
+  "dependencies": {
+    "heroku-client": "^2.4.3",
+    "request-promise": "^2.0.1",
+    "when": "^3.7.3",
+  }
 }

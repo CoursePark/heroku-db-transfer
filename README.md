@@ -1,25 +1,47 @@
-heroku-db-transfer
-==================
+# heroku-db-transfer
 
-For those in need of a way to periodically update their postgres database in one Heroku app with data from another. Can be scheduled using the Heroku Scheduler.
+Copy a database from a source Heroku app to a target Heroku app.
 
+Will destroy the preexisting contents of the target database.
 
-Requires
---------
+Returns a promise that is resolved once the transfer is complete.
 
-- 2 Heroku apps, a source and a destination
-- PG Backups Addon with each app ("Auto - One Month Retention" works for me)
+Has optional verbose parameter that will use console.log to output something like:
 
-Optionals
----------
+```
+DB TRANSFER IN PROGRESS
+0
+8912896
+14155776
+21495808
+28835840
+35197513
+35197513
+35197513
+DB TRANSFER COMPLETE 35197513
+```
 
-- Heroku Scheduler for periodic overwritting of data on destination with data from source
+## Context
 
+At the time of this writing Heroku had not published any details regarding
+their database transfer API, nor does their Node heroku-client package
+implement the needed functionality. By inspecting the source for the Heroku
+Ruby command line client it was reasonable to implement enough functionality in
+Node to get the job done.
 
-Usage
------
+## Assumptions
 
-- ensure HEROKU_API_TOKEN is set as an environment variable
-- `node heroku-db-transfer.js source_heroku_app_name dest_heroku_app_name`
-- or with Heroku Scheduler by calling `db-transfer source_heroku_app_name dest_heroku_app_name`
-- or with Heroku Scheduler if the database, scheduler and this code are all in the same app you can leave off the `dest_heroku_app_name`.
+- only have one Heroku Postgres database per Heroku App
+- the Heroku Postgres database is not the free plan. There is a slightly different subdomain for the API endpoint for these databases and this functionality was not needed by the author. Might work, untested.
+
+## Usage Example
+
+```
+var herokuDbTransfer = require('heroku-db-transfer');
+
+herokuDbTransfer(sourceAppName, targetAppName)
+  .then(function () {
+    console.log('DONE DB TRANSFER');
+  })
+;
+```
