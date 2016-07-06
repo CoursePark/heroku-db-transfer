@@ -26,7 +26,7 @@ module.exports = function (sourceApp, targetApp, verbose) {
 			
 			function isPostgresEnvKey(x) {
 				// matches against pattern HEROKU_POSTGRESQL_XXXXX_URL
-				return x.startsWith('HEROKU_POSTGRESQL_') && x.endsWith('_URL');
+				return x.startsWith('HEROKU_POSTGRESQL_') && x.endsWith('_URL') || x === 'DATABASE_URL';
 			}
 			
 			dbs.forEach(function (db, i) {
