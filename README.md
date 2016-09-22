@@ -43,3 +43,9 @@ herokuDbTransfer(sourceAppName, targetAppName)
   })
 ;
 ```
+## Command Line Usage Example
+
+```
+npm install heroku-db-transfer
+node node_modules/heroku-db-transfer/transfer.js <source-app> <target-app>
+```

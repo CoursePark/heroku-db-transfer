@@ -14,10 +14,22 @@ module.exports = function (sourceApp, targetApp, verbose) {
 	
 	return when
 		.all([
-			heroku.get('/apps/' + sourceApp + '/config-vars'),
-			heroku.get('/apps/' + targetApp + '/config-vars'),
-			heroku.get('/apps/' + sourceApp + '/addons'),
-			heroku.get('/apps/' + targetApp + '/addons')
+			heroku.get('/apps/' + sourceApp + '/config-vars').catch(function (err) {
+				console.error('error with', 'GET /apps/' + sourceApp + '/config-vars');
+				throw err;
+			}),
+			heroku.get('/apps/' + targetApp + '/config-vars').catch(function (err) {
+				console.error('error with', 'GET /apps/' + targetApp + '/config-vars');
+				throw err;
+			}),
+			heroku.get('/apps/' + sourceApp + '/addons').catch(function (err) {
+				console.error('error with', 'GET /apps/' + sourceApp + '/addons');
+				throw err;
+			}),
+			heroku.get('/apps/' + targetApp + '/addons').catch(function (err) {
+				console.error('error with', 'GET /apps/' + targetApp + '/addons');
+				throw err;
+			})
 		])
 		.spread(function (sourceConfigVars, targetConfigVars, sourceAddons, targetAddons) {
 			var dbs = [{}, {}];
@@ -54,6 +66,9 @@ module.exports = function (sourceApp, targetApp, verbose) {
 					to_name: target.name,
 					to_url: target.url
 				}
+			}).catch(function (err) {
+				console.error('error with', 'POST https://postgres-api.heroku.com/client/v11/databases/' + target.name + '/transfers');
+				throw err;
 			});
 		})
 		.then(function (transferState) {
@@ -63,6 +78,9 @@ module.exports = function (sourceApp, targetApp, verbose) {
 					method: 'GET',
 					json: true,
 					auth: {user: '', pass: authToken}
+				}).catch(function (err) {
+					console.error('error with', 'GET https://postgres-api.heroku.com/client/v11/apps/' + targetApp + '/transfers/' + transferState.uuid);
+					throw err;
 				});
 			};
 			
