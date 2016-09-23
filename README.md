@@ -30,7 +30,6 @@ Node to get the job done.
 ## Assumptions
 
 - only have one Heroku Postgres database per Heroku App
-- the Heroku Postgres database is not the free plan. There is a slightly different subdomain for the API endpoint for these databases and this functionality was not needed by the author. Might work, untested.
 
 ## Usage Example
 
