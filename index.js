@@ -12,6 +12,8 @@ module.exports = function (sourceApp, targetApp, verbose) {
 	
 	var heroku = new Heroku({token: authToken});
 	
+	var sourceTransfer;
+	
 	return when
 		.all([
 			heroku.get('/apps/' + sourceApp + '/config-vars').catch(function (err) {
@@ -51,12 +53,23 @@ module.exports = function (sourceApp, targetApp, verbose) {
 					return addon.config_vars.find(isPostgresEnvKey);
 				});
 				db.name = addon.name;
+				// only non hobby-dev and non hobby-basic dbs can do db transfers
+				db.canTransfer = !/:(hobby-dev|hobby-basic)$/.test(addon.plan.name);
 			});
 			
 			var source = dbs[0];
 			var target = dbs[1];
+			
+			if (!source.canTransfer && !target.canTransfer) {
+				console.error('Heroku must have either source or target db be a full database (not hobby-dev nor hobby-basic) to perform a db transfer');
+				throw Error();
+			}
+			
+			sourceTransfer = source.canTransfer;
+			
+			var postTransferUrl = 'https://postgres-api.heroku.com/client/v11/databases/' + (sourceTransfer ? source.name : target.name) + '/transfers';
 			return rp({
-				uri: 'https://postgres-api.heroku.com/client/v11/databases/' + target.name + '/transfers',
+				uri: postTransferUrl,
 				method: 'POST',
 				json: true,
 				auth: {user: '', pass: authToken},
@@ -67,19 +80,20 @@ module.exports = function (sourceApp, targetApp, verbose) {
 					to_url: target.url
 				}
 			}).catch(function (err) {
-				console.error('error with', 'POST https://postgres-api.heroku.com/client/v11/databases/' + target.name + '/transfers');
+				console.error('error with', 'POST', postTransferUrl);
 				throw err;
 			});
 		})
 		.then(function (transferState) {
 			var getTransferState = function () {
+				var getTransferUrl = 'https://postgres-api.heroku.com/client/v11/apps/' + (sourceTransfer ? sourceApp : targetApp) + '/transfers/' + transferState.uuid;
 				return rp({
-					uri: 'https://postgres-api.heroku.com/client/v11/apps/' + targetApp + '/transfers/' + transferState.uuid,
+					uri: getTransferUrl,
 					method: 'GET',
 					json: true,
 					auth: {user: '', pass: authToken}
 				}).catch(function (err) {
-					console.error('error with', 'GET https://postgres-api.heroku.com/client/v11/apps/' + targetApp + '/transfers/' + transferState.uuid);
+					console.error('error with', 'GET', getTransferUrl);
 					throw err;
 				});
 			};
