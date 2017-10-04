@@ -1,5 +1,13 @@
 # heroku-db-transfer
 
+**THIS CODE DOESN'T WORK!**
+
+Heroku changed how their database transfer API works and this code hasn't been updated to reflect those changes.
+
+The Bluedrop team has switched to using the Heroku CLI buildpack (https://github.com/heroku/heroku-buildpack-cli) and the command `heroku pg:copy` where we previously used this.
+
+----------
+
 Copy a database from a source Heroku app to a target Heroku app.
 
 Will destroy the preexisting contents of the target database.

@@ -6,6 +6,9 @@ var rp = require('request-promise');
 var when = require('when');
 
 module.exports = function (sourceApp, targetApp, verbose) {
+	console.error('heroku-db-transfer no longer works, see README for details', 'GET /apps/' + targetApp + '/addons');
+	throw Error();
+	
 	var authToken = process.env.HEROKU_API_TOKEN;
 	var interval = 2 * 1000;
 	var timeoutWithoutProgress = 30 * 1000;
